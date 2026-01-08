@@ -2,16 +2,21 @@
 import mongoose, { Schema, model, models } from 'mongoose';
 
 const TemplateSchema = new Schema({
-  name: { type: String, required: true },       // Tên mẫu (VD: Vest Nam)
-  mainImage: { type: String, required: true },  // Ảnh bìa hiển thị
-  category: { type: String, required: true },   // Loại: 'swap' (ghép mặt) hoặc 'enhance' (làm nét)
-  modelId: { type: String, required: true },    // ID của Model AI (Codeplugtech, Real-ESRGAN...)
-  variants: [{ type: String }],                 // Danh sách các ảnh biến thể (Style)
-  isHot: { type: Boolean, default: false },     // Đánh dấu là HOT Trend
-  createdAt: { type: Date, default: Date.now }  // Ngày tạo
+  name: { type: String, required: true },
+  mainImage: { type: String, required: true },
+  category: { type: String, required: true },
+  modelId: { type: String, required: true },
+  variants: [{ type: String }],
+  isHot: { type: Boolean, default: false },
+  
+  // 👇 THÊM DÒNG NÀY VÀO (Không ảnh hưởng gì cái cũ cả)
+  configParams: { type: String, default: '{}' }, 
+  
+  createdAt: { type: Date, default: Date.now }
 });
 
-// Nếu model đã có thì dùng lại, chưa có thì tạo mới (Tránh lỗi overwrite khi hot reload)
+// Dòng này giúp Next.js không báo lỗi "OverwriteModelError"
+// Nó có nghĩa là: "Nếu có model tên Template rồi thì dùng lại, chưa có thì tạo mới"
 const Template = models.Template || model('Template', TemplateSchema);
 
 export default Template;

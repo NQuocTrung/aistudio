@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Toaster } from 'sonner'; // ✅ Đã import
+import { Inter } from "next/font/google"; 
 import "./globals.css";
-import Navbar from "@/components/Navbar"; // 👈 1. Import cái Menu vào
+import { ClerkProvider } from '@clerk/nextjs';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AI Studio - Sáng tạo không giới hạn",
-  description: "Tạo ảnh nghệ thuật bằng AI",
+  title: "AI Studio - Sáng tạo ảnh vô tận",
+  description: "Tạo ảnh AI, ghép mặt, làm nét ảnh chỉ trong 1 nốt nhạc.",
 };
 
 export default function RootLayout({
@@ -16,16 +17,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="vi">
-      <body className={inter.className}>
-        
-        {/* 👇 2. Đặt Navbar ở đây, nó sẽ hiện ở mọi trang */}
-        <Navbar /> 
-        
-        {/* Đây là phần nội dung thay đổi (Trang chủ, Admin, Editor...) */}
-        {children}
-        
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="vi">
+        <body className={inter.className}>
+          {children}
+          <Toaster position="top-center" richColors />
+          
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

@@ -9,11 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^6.36.5",
+    "@google/generative-ai": "^0.24.1",
     "mongoose": "^9.0.2",
     "next": "16.1.1",
     "react": "19.2.3",
+    "react-compare-slider": "^3.1.0",
     "react-dom": "19.2.3",
-    "replicate": "^1.4.0"
+    "replicate": "^1.4.0",
+    "sonner": "^2.0.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

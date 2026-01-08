@@ -1,42 +1,33 @@
-// lib/mongodb.ts
 import mongoose from 'mongoose';
 
-// Lấy chuỗi kết nối từ file .env.local
-const MONGODB_URI = process.env.MONGODB_URI!;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error('⚠️ Chưa khai báo MONGODB_URI trong file .env.local');
+  throw new Error('Vui lòng định nghĩa MONGODB_URI trong file .env.local');
 }
 
-// Cơ chế lưu cache để không bị tạo quá nhiều kết nối khi reload server
+// Lưu cache kết nối để không bị quá tải khi reload nhiều lần
 let cached = (global as any).mongoose;
 
 if (!cached) {
   cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
-async function connectToDatabase() {
-  if (cached.conn) return cached.conn;
+// 👇 Lưu ý: Phải dùng 'export const' hoặc 'export function'
+export async function connectToDatabase() {
+  if (cached.conn) {
+    return cached.conn;
+  }
 
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      console.log("✅ Đã kết nối MongoDB thành công!");
+    cached.promise = mongoose.connect(MONGODB_URI!, opts).then((mongoose) => {
       return mongoose;
     });
   }
-  
-  try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
-  }
-
+  cached.conn = await cached.promise;
   return cached.conn;
 }
-
-export default connectToDatabase;
