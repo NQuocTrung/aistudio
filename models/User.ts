@@ -12,8 +12,9 @@ const UserSchema = new Schema({
   // Hạng thành viên: 'free' hoặc 'pro' (để sau này tính năng VIP)
   plan: { type: String, default: 'free' },
   
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  lastDailyBonus: { type: Date, default: Date.now },
 });
 
 const User = models.User || model('User', UserSchema);
-export default User;
+export default User; 

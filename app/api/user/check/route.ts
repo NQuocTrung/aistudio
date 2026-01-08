@@ -34,7 +34,7 @@ export async function GET() {
           now.getFullYear() === lastBonus.getFullYear();
 
       if (!isSameDay) {
-          // 👉 LOGIC PHƯƠNG ÁN 2: BÙ ĐỦ 10 XU
+          //  BÙ ĐỦ 10 XU
           
           if (user.credits < 10) {
               // Nếu đang nghèo (dưới 10 xu) -> Bù cho đủ 10 xu

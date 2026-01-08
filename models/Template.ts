@@ -5,6 +5,8 @@ const TemplateSchema = new Schema({
   name: { type: String, required: true },
   mainImage: { type: String, required: true },
   category: { type: String, required: true },
+  label: { type: String, default: 'Công cụ AI' }, // Tên hiển thị (VD: 🎭 Ghép mặt)
+  color: { type: String, default: 'bg-blue-500' }, // Màu sắc hiển thị
   modelId: { type: String, required: true },
   variants: [{ type: String }],
   isHot: { type: Boolean, default: false },
