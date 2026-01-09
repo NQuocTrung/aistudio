@@ -1,21 +1,20 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-// 👇 Danh sách các trang CÔNG KHAI (Không cần đăng nhập vẫn vào được)
 const isPublicRoute = createRouteMatcher([
   "/", 
   "/sign-in(.*)", 
   "/sign-up(.*)", 
-  "/api/run",           // 👈 QUAN TRỌNG: Cho phép khách chạy AI
-  "/api/posts",         // 👈 Cho phép khách đọc bài viết
-  "/api/magic-prompt",  // 👈 Cho phép khách dùng Magic Prompt
-  "/api/templates",     // 👈 Cho phép lấy mẫu
-  "/sang-tao",          // 👈 Trang sáng tạo
-  "/admin/login"        // 👈 Trang đăng nhập Admin
+  "/api/run",           
+  "/api/posts",         
+  "/api/magic-prompt", 
+  "/api/templates",     
+  "/sang-tao",          
+  "/admin/login"        
 ]);
 
 export default clerkMiddleware((auth, req) => {
-  // Nếu KHÔNG phải trang công khai thì mới bắt đăng nhập
   if (!isPublicRoute(req)) {
+    // 👇 THÊM DÒNG NÀY ĐỂ BỎ QUA LỖI ĐỎ
     // @ts-ignore
     auth().protect();
   }

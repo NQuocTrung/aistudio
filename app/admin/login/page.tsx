@@ -1,40 +1,26 @@
-'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { NextResponse } from 'next/server';
 
-export default function AdminLogin() {
-  const [pass, setPass] = useState('');
-  const router = useRouter();
-
-  const handleLogin = async () => {
-    // Gọi API để xác thực và lưu cookie
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ password: pass })
-    });
+export async function POST(request: Request) {
+  try {
+    const { password } = await request.json();
     
-    if (res.ok) {
-      router.push('/admin'); // Đúng pass thì cho vào
-    } else {
-      alert("Sai mật khẩu rồi bạn ơi! 🚫");
+    // So sánh với mật khẩu trong Biến môi trường
+    if (password === process.env.ADMIN_PASSWORD) {
+      // Trả về thành công + Cookie (hoặc token đơn giản)
+      const response = NextResponse.json({ success: true });
+      
+      // Lưu cookie để nhớ trạng thái admin (đơn giản hóa)
+      response.cookies.set('admin_session', 'true', {
+        httpOnly: true,
+        path: '/',
+        maxAge: 60 * 60 * 24 // 1 ngày
+      });
+      
+      return response;
     }
-  };
 
-  return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-4">
-      <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 w-full max-w-md text-center">
-        <h1 className="text-2xl font-bold mb-6 text-pink-500">🔒 KHU VỰC QUẢN TRỊ</h1>
-        <input 
-          type="password" 
-          placeholder="Nhập mật khẩu Admin..." 
-          className="w-full p-3 rounded bg-gray-800 border border-gray-700 mb-4 focus:border-pink-500 outline-none text-white"
-          onChange={e => setPass(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleLogin()}
-        />
-        <button onClick={handleLogin} className="w-full bg-pink-600 text-white p-3 rounded font-bold hover:bg-pink-700">
-          MỞ KHÓA 🔓
-        </button>
-      </div>
-    </div>
-  );
+    return NextResponse.json({ error: "Sai mật khẩu" }, { status: 401 });
+  } catch (error) {
+    return NextResponse.json({ error: "Lỗi Server" }, { status: 500 });
+  }
 }
