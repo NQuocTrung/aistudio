@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useUser, useClerk } from '@clerk/nextjs'; // 👈 Thêm useClerk để mở form đăng nhập
+import { useUser, useClerk } from '@clerk/nextjs'; 
 import { toast } from 'sonner';
 
-// --- CẤU HÌNH MENU DANH MỤC ---
+
 const MODES = [
   { id: 'text-to-image', name: 'Tạo ảnh từ chữ', icon: '✨', desc: 'Nhập mô tả để AI vẽ tranh' },
   { id: 'nano-banana', name: 'Google Nano (VIP)', icon: '🍌', desc: 'Sửa ảnh thông minh (Hỗ trợ nhiều ảnh)' },
@@ -39,22 +39,22 @@ export default function CreativePage() {
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [viewingPost, setViewingPost] = useState<Post | null>(null);
 
-  // 👇 STATE MỚI: Đếm số lần dùng thử
+  // lần dùng thử
   const [guestUsage, setGuestUsage] = useState(0);
 
-  // 1. Init Data
+
   useEffect(() => {
-    // Load Blog
+  
     fetch('/api/posts').then(r => r.json()).then(d => { if (Array.isArray(d)) setPosts(d); setLoadingPosts(false); }).catch(() => setLoadingPosts(false));
 
-    // 👇 Load số lần đã dùng từ LocalStorage (nếu chưa đăng nhập)
+    // lần đã dùng
     if (!isSignedIn) {
         const usage = localStorage.getItem('guest_usage');
         if (usage) setGuestUsage(parseInt(usage));
     }
   }, [isSignedIn]);
 
-  // 1. Hàm chuyển danh sách file sang danh sách Base64
+  //  file sang  Base64
   const filesToBase64 = async (files: File[]): Promise<string[]> => {
     const promises = files.map(file => 
       new Promise<string>((resolve, reject) => {
@@ -67,7 +67,7 @@ export default function CreativePage() {
     return Promise.all(promises);
   };
 
-  // 2. Hàm xử lý khi người dùng chọn file
+  // xử lý 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.files && e.target.files.length > 0) {
           const newFiles = Array.from(e.target.files);
@@ -81,13 +81,13 @@ export default function CreativePage() {
       }
   };
 
-  // 3. Hàm Bắt đầu tạo ảnh (ĐÃ SỬA: THÊM LOGIC CHECK 3 LẦN)
+  //  tạo ảnh
   const handleGenerate = async () => {
-    // Validate dữ liệu
+    
     if (mode === 'text-to-image' && !prompt) return toast.warning('Vui lòng nhập mô tả ý tưởng!');
     if (mode !== 'text-to-image' && selectedImages.length === 0) return toast.warning('Vui lòng chọn ít nhất 1 ảnh!');
 
-    // 👇 KIỂM TRA LƯỢT DÙNG THỬ (Nếu chưa đăng nhập)
+    // LƯỢT DÙNG THỬ
     if (!isSignedIn) {
         if (guestUsage >= 3) {
             toast.error("Hết 3 lượt dùng thử miễn phí!");
@@ -124,7 +124,7 @@ export default function CreativePage() {
             setResult(data.result);
             toast.success("Tạo ảnh thành công!"); 
             
-            // 👇 TRỪ LƯỢT DÙNG CỦA KHÁCH SAU KHI THÀNH CÔNG
+            // TRỪ LƯỢT 
             if (!isSignedIn) {
                 const newUsage = guestUsage + 1;
                 setGuestUsage(newUsage);
@@ -243,7 +243,7 @@ export default function CreativePage() {
              ))}
           </nav>
           
-          {/* 👇 HIỂN THỊ TRẠNG THÁI KHÁCH/VIP Ở SIDEBAR */}
+          {/* TRẠNG THÁI */}
           <div className="p-4 border-t border-gray-800">
              {!isSignedIn ? (
                  <div className="bg-gray-800 rounded-xl p-3 text-center mb-3 border border-gray-700">
@@ -263,7 +263,7 @@ export default function CreativePage() {
           </div>
       </aside>
 
-      {/* MAIN CONTENT */}
+      {/* CONTENT */}
       <main className="flex-1 p-6 md:p-10 overflow-y-auto bg-[url('/grid.svg')] bg-fixed">
           <div className="md:hidden mb-6 flex justify-between items-center bg-[#121212] p-4 rounded-xl">
              <Link href="/" className="text-gray-400 font-bold flex items-center gap-2">
@@ -274,13 +274,12 @@ export default function CreativePage() {
 
           <div className="max-w-4xl mx-auto">
              
-             {/* === CÔNG CỤ === */}
+             {/*  CÔNG CỤ  */}
              <div className="mb-20">
                  <div className="flex justify-between items-center mb-2">
                     <h1 className="text-3xl font-bold flex items-center gap-2">
                         {MODES.find(m => m.id === mode)?.icon} {MODES.find(m => m.id === mode)?.name}
                     </h1>
-                    {/* Badge đếm lượt trên Mobile/Main Content */}
                     {!isSignedIn && guestUsage < 3 && (
                         <span className="bg-yellow-500/20 text-yellow-400 text-xs font-bold px-3 py-1 rounded-full border border-yellow-500/50">
                             Khách: Còn {3 - guestUsage} lượt
@@ -396,7 +395,7 @@ export default function CreativePage() {
                  </div>
              </div>
 
-             {/* === 👇 PHẦN DƯỚI: THƯ VIỆN BÀI VIẾT (ĐÃ CẬP NHẬT: CLICKABLE) === */}
+             {/*THƯ VIỆN BÀI VIẾT  */}
              <div className="border-t border-gray-800 pt-10 mt-12">
                  <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-500">
                     📚 Thư viện Prompt & Ý tưởng
@@ -447,7 +446,7 @@ export default function CreativePage() {
           </div>
       </main>
 
-      {/* === 👇 MODAL ĐỌC CHI TIẾT (POPUP) === */}
+      {/* ĐỌC  */}
       {viewingPost && (
           <div className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 z-[100] animate-in fade-in duration-200">
               <div className="bg-[#1a1a1a] w-full max-w-2xl rounded-2xl border border-gray-700 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">

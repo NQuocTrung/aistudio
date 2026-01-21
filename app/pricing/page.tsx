@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useUser } from '@clerk/nextjs';
-import { toast } from 'sonner'; // 👈 Dùng thông báo xịn
+import { toast } from 'sonner'; 
 
-// Danh sách gói nạp
+
 const PACKAGES = [
   { id: 'starter', name: 'Gói Khởi Động', credits: 10, price: '20.000đ', color: 'from-blue-500 to-cyan-400' },
   { id: 'pro', name: 'Gói Sáng Tạo', credits: 50, price: '50.000đ', color: 'from-purple-500 to-pink-500', popular: true },
@@ -14,9 +14,9 @@ const PACKAGES = [
 export default function PricingPage() {
   const { user, isLoaded } = useUser();
   const [loading, setLoading] = useState(false);
-  const [selectedPkg, setSelectedPkg] = useState<any>(null); // Gói đang chọn để thanh toán
+  const [selectedPkg, setSelectedPkg] = useState<any>(null); 
 
-  // Hàm xử lý thanh toán (Giả lập)
+  // Hàm xử lý thanh toán 
   const handlePayment = async () => {
     if (!selectedPkg) return;
     
@@ -39,9 +39,9 @@ export default function PricingPage() {
         if (res.ok) {
             toast.dismiss(toastId);
             toast.success(`Nạp thành công +${selectedPkg.credits} Xu!`);
-            setSelectedPkg(null); // Tắt popup
+            setSelectedPkg(null); 
             
-            // Reload lại trang sau 1s để cập nhật số dư trên Header
+            
             setTimeout(() => window.location.reload(), 1500);
         } else {
             throw new Error(data.error);
@@ -59,13 +59,13 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white font-sans flex flex-col">
       
-      {/* Header đơn giản */}
+      {/* Header*/}
       <header className="p-6 border-b border-gray-800 flex justify-between items-center">
          <Link href="/" className="text-xl font-bold">← Quay về</Link>
          <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500">
             Nạp Xu Sáng Tạo 💎
          </h1>
-         <div className="w-20"></div> {/* Spacer */}
+         <div className="w-20"></div> 
       </header>
 
       <main className="flex-1 max-w-5xl mx-auto p-6 w-full">
@@ -110,7 +110,6 @@ export default function PricingPage() {
          </div>
       </main>
 
-      {/* MODAL THANH TOÁN QR CODE (GIẢ LẬP) */}
       {selectedPkg && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-[#1a1a1a] rounded-2xl p-6 max-w-sm w-full border border-gray-700 shadow-2xl animate-in zoom-in-95 duration-200">
@@ -119,9 +118,9 @@ export default function PricingPage() {
                     Quét mã QR để thanh toán gói <span className="text-yellow-400 font-bold">{selectedPkg.name}</span>
                 </p>
 
-                {/* QR Code Giả */}
+               
                 <div className="bg-white p-4 rounded-xl mb-6 mx-auto w-48 h-48 flex items-center justify-center">
-                     {/* Bạn có thể thay ảnh QR thật vào đây nếu muốn */}
+                     
                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=MoMo_Fake_Payment_${selectedPkg.price}`} className="w-full h-full" />
                 </div>
 

@@ -1,16 +1,15 @@
 import mongoose, { Schema, model, models } from 'mongoose';
 
 const HistorySchema = new Schema({
-  // Link ảnh kết quả (Quan trọng nhất)
+  // Link ảnh kết quả
   resultImage: { type: String, required: true },
   
-  // Link ảnh gốc người dùng up lên (để họ nhớ là họ đã dùng ảnh nào)
+  // Link ảnh gốc 
   originalImage: { type: String },
   
-  // ID của mẫu đã dùng (để biết dùng mẫu nào)
+  // ID của mẫu
   templateId: { type: String },
   
-  // Tạm thời chưa có đăng nhập thì để trống, sau này sẽ lưu ID người dùng vào đây
   userId: { type: String, default: 'guest' }, 
   isPublic: { type: Boolean, default: false },
 

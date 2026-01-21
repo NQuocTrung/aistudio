@@ -25,7 +25,7 @@ export async function GET() {
     } else {
       // 2. Kiểm tra xem đã sang ngày mới chưa
       const now = new Date();
-      // Nếu lastDailyBonus chưa có (data cũ), coi như là ngày hôm qua
+      // Nếu chưa có, coi như là ngày hôm qua
       const lastBonus = user.lastDailyBonus ? new Date(user.lastDailyBonus) : new Date(0); 
 
       const isSameDay = 
@@ -37,15 +37,15 @@ export async function GET() {
           //  BÙ ĐỦ 10 XU
           
           if (user.credits < 10) {
-              // Nếu đang nghèo (dưới 10 xu) -> Bù cho đủ 10 xu
+              // dưới 10 xu
               user.credits = 10;
               console.log(`🎁 Đã bù đủ 10 xu hàng ngày cho ${user.email}`);
           } else {
-              // Nếu đang giàu (>= 10 xu) -> Không cộng thêm
+              // Không cộng thêm
               console.log(`ℹ️ ${user.email} đang có ${user.credits} xu (>=10) nên không nhận bonus.`);
           }
           
-          // Cập nhật ngày nhận thưởng là hôm nay
+          // Cập nhật 
           user.lastDailyBonus = now;
           await user.save();
       }

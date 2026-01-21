@@ -14,10 +14,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { prompt, mode, images, model: oldModel, input: oldInput, templateId, userUrl } = body;
     
-    // Lấy thông tin người dùng từ Clerk
+    // Lấy thông tin 
     const clerkUser = await currentUser();
     
-    // --- 1. LOGIC KIỂM TRA QUYỀN & HỒI LƯỢT (DAILY RESET) ---
+    // 1. LOGIC KIỂM TRA QUYỀN 
     const isAdmin = clerkUser?.publicMetadata?.role === 'admin';
     let dbUser = null;
 
@@ -26,23 +26,23 @@ export async function POST(request: Request) {
         dbUser = await User.findOne({ clerkId: clerkUser.id });
         
         if (dbUser && !isAdmin) {
-            // 👇 A. LOGIC HỒI 10 LƯỢT MỖI NGÀY
+            //  10 LƯỢT MỖI NGÀY
             const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Lấy 00:00 hôm nay
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); 
             
-            // Nếu chưa có ngày nhận thưởng hoặc ngày nhận thưởng cũ hơn hôm nay
+        
             if (!dbUser.lastDailyBonus || new Date(dbUser.lastDailyBonus) < today) {
-                // Nếu xu đang dưới 10 -> Hồi lại thành 10 (Không cộng dồn vô hạn để tránh farm)
+                // Nếu xu đang dưới 10, Hồi lại thành 10 
                 if (dbUser.creditBalance < 10) {
                     dbUser.creditBalance = 10;
                 }
-                // Cập nhật ngày nhận thưởng là hôm nay
+                
                 dbUser.lastDailyBonus = now;
                 await dbUser.save();
                 console.log(`🔄 Đã hồi lượt daily cho user: ${dbUser.email}`);
             }
 
-            // 👇 B. KIỂM TRA HẾT LƯỢT
+            //  KIỂM TRA HẾT LƯỢT
             if (dbUser.creditBalance <= 0) {
                 return NextResponse.json({ 
                     error: "Hết 10 lượt hôm nay! Hãy quay lại vào ngày mai hoặc nâng cấp VIP." 
@@ -50,9 +50,9 @@ export async function POST(request: Request) {
             }
         }
     }
-    // (Nếu là Khách -> Bỏ qua đoạn trên, đi tiếp xuống dưới để chạy AI)
+   
 
-    // --- 2. CẤU HÌNH MODEL (GIỮ NGUYÊN) ---
+    // 2. CẤU HÌNH MODEL 
     let modelId = "";
     let finalInput = {};
     let logMessage = "";
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
             logMessage = "🖼️ Image-to-Image";
         }
         else if (mode === 'upscale') {
-            // Model CodeFormer xịn
+            
             modelId = "sczhou/codeformer:7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56";
             const firstImage = images?.[0];
             if (!firstImage) return NextResponse.json({ error: "Thiếu ảnh gốc" }, { status: 400 });
@@ -102,10 +102,10 @@ export async function POST(request: Request) {
 
     console.log(`🚀 Chạy: ${logMessage} | User: ${clerkUser ? clerkUser.id : 'Guest'}`);
 
-    // --- 3. GỌI REPLICATE ---
+    // 3. GỌI REPLICATE
     const output = await replicate.run(modelId as any, { input: finalInput });
 
-    // --- 4. XỬ LÝ KẾT QUẢ ---
+    // 4. XỬ LÝ KẾT QUẢ
     let finalUrl = null;
     if (Array.isArray(output) && output.length > 0) finalUrl = String(output[0]);
     else finalUrl = String(output);
@@ -114,8 +114,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Lỗi AI: Không tạo được ảnh." }, { status: 500 });
     }
 
-    // --- 5. LƯU & TRỪ TIỀN (CHỈ KHI CÓ USER) ---
-    // Khách dùng chùa thì không lưu vào DB
+    // --- 5. LƯU 
     if (clerkUser) {
         try {
             await connectToDatabase();

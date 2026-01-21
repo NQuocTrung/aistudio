@@ -16,7 +16,7 @@ export async function POST(request: Request) {
 
     const genAI = new GoogleGenerativeAI(apiKey);
     
-    // ✅ SỬ DỤNG MODEL MỚI NHẤT TỪ DANH SÁCH CỦA BẠN
+    // gemini
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const systemInstruction = `

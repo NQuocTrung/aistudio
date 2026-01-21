@@ -6,14 +6,12 @@ if (!MONGODB_URI) {
   throw new Error('Vui lòng định nghĩa MONGODB_URI trong file .env.local');
 }
 
-// Lưu cache kết nối để không bị quá tải khi reload nhiều lần
 let cached = (global as any).mongoose;
 
 if (!cached) {
   cached = (global as any).mongoose = { conn: null, promise: null };
 }
 
-// 👇 Lưu ý: Phải dùng 'export const' hoặc 'export function'
 export async function connectToDatabase() {
   if (cached.conn) {
     return cached.conn;

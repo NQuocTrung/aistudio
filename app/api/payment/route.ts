@@ -18,12 +18,11 @@ export async function POST(request: Request) {
     await connectToDatabase();
 
     // 4. Cộng tiền cho User
-    // Dùng $inc để cộng dồn, upsert: true để nếu chưa có user trong bảng User thì tạo mới luôn
     const updatedUser = await User.findOneAndUpdate(
       { clerkId: user.id },
       { 
-        $inc: { credits: amount }, // Cộng thêm số xu
-        $setOnInsert: { email: user.emailAddresses[0].emailAddress } // Nếu mới tạo thì lưu email
+        $inc: { credits: amount },
+        $setOnInsert: { email: user.emailAddresses[0].emailAddress } 
       },
       { new: true, upsert: true }
     );

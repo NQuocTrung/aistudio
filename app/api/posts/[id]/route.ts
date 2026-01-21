@@ -3,7 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import Post from "@/models/Post";
 import { currentUser } from "@clerk/nextjs/server";
 
-// 1. LẤY DANH SÁCH (GET)
+// 1. LẤY DANH SÁCH
 export async function GET() {
   try {
     await connectToDatabase();
@@ -14,7 +14,7 @@ export async function GET() {
   }
 }
 
-// 2. TẠO MỚI (POST)
+// 2. TẠO MỚI 
 export async function POST(request: Request) {
   try {
     const user = await currentUser();
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
   }
 }
 
-// 3. CẬP NHẬT (PUT) - Mới thêm
+// 3. CẬP NHẬT
 export async function PUT(request: Request) {
     try {
         const user = await currentUser();
@@ -52,7 +52,7 @@ export async function PUT(request: Request) {
 
         await connectToDatabase();
         
-        // Cập nhật theo ID
+      
         const updatedPost = await Post.findByIdAndUpdate(_id, updateData, { new: true });
         
         return NextResponse.json(updatedPost);
@@ -62,7 +62,7 @@ export async function PUT(request: Request) {
     }
 }
 
-// 4. XÓA (DELETE) - Mới thêm (Dùng ?id=...)
+// 4. XÓA
 export async function DELETE(request: Request) {
     try {
         const user = await currentUser();

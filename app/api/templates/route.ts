@@ -2,27 +2,27 @@ import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import Template from '@/models/Template';
 
-// 1. LẤY MẪU (GET) - ĐÃ SỬA LOGIC LỌC THEO ID ✅
+// 1. LẤY MẪU 
 export async function GET(request: Request) {
   try {
     await connectToDatabase();
 
-    // 👇 BƯỚC QUAN TRỌNG: Lấy tham số ID từ đường dẫn URL
+    //  Lấy tham số ID từ đường dẫn URL
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
     if (id) {
-      // 👉 TRƯỜNG HỢP A: Có ID -> Tìm đúng 1 cái mẫu đó thôi
+      
       const template = await Template.findById(id);
       
-      // Nếu không tìm thấy thì báo lỗi 404 (tùy chọn) hoặc trả về null
+      //
       if (!template) {
           return NextResponse.json({ error: "Không tìm thấy mẫu" }, { status: 404 });
       }
       
       return NextResponse.json(template);
     } else {
-      // 👉 TRƯỜNG HỢP B: Không có ID -> Lấy tất cả (Dành cho trang chủ)
+      
       const templates = await Template.find({}).sort({ createdAt: -1 });
       return NextResponse.json(templates);
     }
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
   }
 }
 
-// 2. THÊM MẪU MỚI (POST)
+// 2. THÊM MẪU
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -59,7 +59,7 @@ export async function POST(request: Request) {
   }
 }
 
-// 3. CẬP NHẬT MẪU (PUT)
+// 3. CẬP NHẬT 
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
@@ -88,7 +88,7 @@ export async function PUT(request: Request) {
   }
 }
 
-// 4. XÓA MẪU (DELETE)
+// 4. XÓA MẪU 
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);

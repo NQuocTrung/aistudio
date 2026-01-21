@@ -5,8 +5,7 @@ import { usePathname } from 'next/navigation';
 export default function Navbar() {
   const pathname = usePathname();
   
-  // Không hiện menu ở trang tạo ảnh để tập trung trải nghiệm
-  // if (pathname.startsWith('/tao/')) return null;
+  
 
   return (
     <nav className="border-b border-gray-800 bg-gray-950/80 backdrop-blur-md sticky top-0 z-50">
@@ -27,7 +26,7 @@ export default function Navbar() {
             HƯỚNG DẪN
           </Link>
 
-          {/* Nút Admin (Thực tế nên ẩn đi, nhưng ta để đây để bạn dễ vào) */}
+          {/* Nút Admin */}
           <Link href="/admin">
             <button className="bg-gray-800 px-4 py-2 rounded-full hover:bg-gray-700 border border-gray-700 transition">
               🔧 Quản trị

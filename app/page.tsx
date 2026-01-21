@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import { toast } from 'sonner';
 
-// --- TYPE ---
+
 interface Template {
   _id: string;
   name: string;
@@ -38,18 +38,17 @@ export default function Home() {
   // --- STATE ---
   const [templates, setTemplates] = useState<Template[]>([]);
   const [feed, setFeed] = useState<FeedItem[]>([]);
-  const [posts, setPosts] = useState<Post[]>([]); // 👇 State mới cho Blog
+  const [posts, setPosts] = useState<Post[]>([]); 
   
   const [loadingTemplates, setLoadingTemplates] = useState(true);
   const [loadingFeed, setLoadingFeed] = useState(true);
   
   const [credits, setCredits] = useState<number | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
-  const [readingPost, setReadingPost] = useState<Post | null>(null); // 👇 State đọc bài
+  const [readingPost, setReadingPost] = useState<Post | null>(null); 
 
-  // --- API CALLS ---
   useEffect(() => {
-    // 1. Templates
+    // Templates
     fetch('/api/templates')
       .then((res) => res.json())
       .then((data) => {
@@ -58,18 +57,17 @@ export default function Home() {
       })
       .catch(() => setLoadingTemplates(false));
 
-    // 2. Feed Cộng đồng
-    fetch('/api/feed') // Hoặc /api/community tùy file bạn dùng
+    // Cộng đồng
+    fetch('/api/feed') 
       .then((res) => res.json())
       .then((data) => {
-        // Support cả 2 format trả về (mảng trực tiếp hoặc {images: []})
         const list = Array.isArray(data) ? data : (data.images || []);
         setFeed(list);
         setLoadingFeed(false);
       })
       .catch(() => setLoadingFeed(false));
 
-    // 3. 👇 Blog Posts (MỚI)
+    // Blog Posts
     fetch('/api/posts')
       .then((res) => res.json())
       .then((data) => {
@@ -79,7 +77,7 @@ export default function Home() {
 
   }, []);
 
-  // 4. Credits
+  //  Credits
   useEffect(() => {
     if (isSignedIn) {
       fetch('/api/user/check')
@@ -89,7 +87,6 @@ export default function Home() {
     }
   }, [isSignedIn]);
 
-  // --- HANDLERS ---
   const handleCopyPrompt = (prompt: string | undefined, id: string) => {
     if (!prompt) return toast.warning("Ảnh này không có prompt!");
     navigator.clipboard.writeText(prompt);
@@ -101,7 +98,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-950 text-white font-sans">
       
-      {/* === HEADER (GIỮ NGUYÊN) === */}
+      {/*HEADER */}
       <header className="flex justify-between items-center p-6 border-b border-gray-800 backdrop-blur-md sticky top-0 z-50 bg-gray-950/80">
         <Link href="/" className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-pink-600 cursor-pointer">QT STUDIO</Link>
         <div className="flex items-center gap-3">
@@ -123,7 +120,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* === HERO SECTION (GIỮ NGUYÊN) === */}
       <div className="text-center py-20 px-4 bg-[url('/grid.svg')] bg-fixed">
         <h1 className="text-5xl md:text-7xl font-bold mb-6">Sáng tạo ảnh <br /><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">bằng AI cực chất</span></h1>
         <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10">Kho mẫu đa dạng & Cộng đồng chia sẻ ý tưởng không giới hạn.</p>
@@ -134,7 +130,7 @@ export default function Home() {
 
       <div className="max-w-7xl mx-auto p-6 space-y-20 pb-20">
         
-        {/* === PHẦN 1: DANH SÁCH MẪU (GIỮ NGUYÊN) === */}
+        {/* DANH SÁCH MẪU */}
         <section>
             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">🔥 Mẫu Hot đang thịnh hành</h2>
             {loadingTemplates ? (
@@ -157,7 +153,7 @@ export default function Home() {
             )}
         </section>
 
-        {/* === PHẦN 2: BLOG & TIN TỨC (MỚI THÊM VÀO ĐÂY) === */}
+        {/*  BLOG  */}
         {posts.length > 0 && (
             <section className="border-t border-gray-800 pt-10">
                 <div className="flex justify-between items-end mb-8">
@@ -192,7 +188,7 @@ export default function Home() {
             </section>
         )}
 
-        {/* === PHẦN 3: CỘNG ĐỒNG SÁNG TẠO (GIỮ NGUYÊN) === */}
+        {/* CỘNG ĐỒNG SÁNG TẠO  */}
         <section className="border-t border-gray-800 pt-10">
              <div className="flex justify-between items-end mb-8">
                 <div>
@@ -228,7 +224,6 @@ export default function Home() {
 
       </div>
 
-      {/* === MODAL ĐỌC BÀI VIẾT (MỚI) === */}
       {readingPost && (
         <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] flex justify-center overflow-y-auto p-4 md:p-10">
             <div className="bg-[#121212] w-full max-w-3xl rounded-2xl border border-gray-800 shadow-2xl overflow-hidden flex flex-col relative animate-in zoom-in-95 duration-200 h-fit mb-10">

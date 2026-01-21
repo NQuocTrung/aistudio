@@ -14,14 +14,14 @@ export async function POST(request: Request) {
 
     await connectToDatabase();
 
-    // 2. Tìm ảnh trong DB (Phải đúng ID ảnh và đúng ID người tạo)
+    // 2. Tìm ảnh trong DB 
     const historyItem = await History.findOne({ _id: historyId, userId: user.id });
 
     if (!historyItem) {
       return NextResponse.json({ error: "Không tìm thấy ảnh hoặc bạn không có quyền." }, { status: 404 });
     }
 
-    // 3. Đảo ngược trạng thái (Đang tắt thành bật, đang bật thành tắt)
+    // 3. Đảo ngược trạng thái
     historyItem.isPublic = !historyItem.isPublic;
     await historyItem.save();
 

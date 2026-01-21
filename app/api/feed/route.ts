@@ -7,17 +7,17 @@ export async function GET() {
   try {
     await connectToDatabase();
 
-    // Lấy các ảnh công khai, mới nhất lên đầu, giới hạn 50 ảnh
+    // Lấy các ảnh công khai, mới nhất lên đầu
     const feed = await History.find({ isPublic: true })
                               .sort({ createdAt: -1 })
                               .limit(50) 
-                              .select('resultImage prompt createdAt'); // Chỉ lấy các trường cần thiết cho nhẹ
+                              .select('resultImage prompt createdAt'); 
 
     return NextResponse.json(feed);
 
   } catch (error: any) {
     console.error("Lỗi lấy feed:", error);
-    // Trả về mảng rỗng nếu lỗi để frontend không bị crash
+
     return NextResponse.json([]);
   }
 }
